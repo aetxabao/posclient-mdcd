@@ -40,19 +40,19 @@ namespace PosClient
         {
             //TODO: ===== Verificar los mensajes recibido del servidor con su clave pública
 
-            try
-            {
-                return X.VerifyData
-                (
-                    X.ShaHash(m.From + m.To + m.Msg),
-                    m.Stamp,
-                    srvPubKey
-                );
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+                try
+                {
+                    return X.VerifyData
+                    (
+                        X.ShaHash(m.From + m.To + m.Msg),
+                        m.Stamp,
+                        srvPubKey
+                    );
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
 
             // ========================================================================== //
         }
@@ -62,7 +62,7 @@ namespace PosClient
         {
             //TODO: ===== Poner en el Stamp del mensaje la firma del cliente
 
-            m.Stamp = X.SignedData(X.ShaHash(m.From + m.To + m.Msg), rsa);
+                m.Stamp = X.SignedData(X.ShaHash(m.From + m.To + m.Msg), rsa);
 
             // ========================================================================== //
         }
@@ -197,7 +197,7 @@ namespace PosClient
 
                     //TODO: ===== Acceder a las opciones de MDCD mostrando el menú critográfico
 
-                    mdcd.Run();
+                        mdcd.Run();
 
                     // ========================================================================== //
 
@@ -220,14 +220,14 @@ namespace PosClient
 
             //TODO: ===== Crear un mensaje con la clave pública del cliente firmado y enviarlo
             
-            Message mensaje = new Message();
+                Message mensaje = new Message();
 
-            mensaje.From = f;
-            mensaje.To = "0";
-            mensaje.Msg = "PUBKEY " + X.RsaGetPubParsXml(rsa);
-            Sign(ref mensaje);
+                mensaje.From = f;
+                mensaje.To = "0";
+                mensaje.Msg = "PUBKEY " + X.RsaGetPubParsXml(rsa);
+                Sign(ref mensaje);
 
-            Send(socket, mensaje);
+                Send(socket, mensaje);
 
             // ========================================================================== //
 
@@ -239,13 +239,13 @@ namespace PosClient
                 //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
                 //y no asignar a srvPubKey la clave pública del servidor recibida
 
-                srvPubKey = response.Msg;
+                    srvPubKey = response.Msg;
 
-                if (!Verify(response))
-                {
-                    response.Msg = "ERROR server validation";
-                    srvPubKey = null;
-                }
+                    if (!Verify(response))
+                    {
+                        response.Msg = "ERROR server VALIDATION";
+                        srvPubKey = null;
+                    }
 
                 // ========================================================================== //
             }
@@ -267,7 +267,7 @@ namespace PosClient
 
             //TODO: ===== Firmar mensaje que solicita lista de correos
 
-            Sign(ref request);
+                Sign(ref request);
 
             // ========================================================================== //
 
@@ -278,8 +278,8 @@ namespace PosClient
             //TODO: ===== Verificar el mensaje de respuesta a LIST
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
             
-            if(!Verify(response))
-                response.Msg = "ERROR server VALIDATION";
+                if(!Verify(response))
+                    response.Msg = "ERROR server VALIDATION";
 
             // ========================================================================== //
 
@@ -302,7 +302,7 @@ namespace PosClient
 
             //TODO: ===== Firmar mensaje que solicita un correo
 
-            Sign(ref request);
+                Sign(ref request);
 
             // ========================================================================== //
             
@@ -330,7 +330,7 @@ namespace PosClient
 
             //TODO: ===== Firmar mensaje que se envia para otro cliente
             
-            Sign(ref request);
+                Sign(ref request);
 
             // ========================================================================== //
 
@@ -341,8 +341,8 @@ namespace PosClient
             //TODO: ===== Verificar el mensaje de respuesta de recepción
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
             
-            if(!Verify(response))
-                response.Msg = "ERROR server VALIDATION";
+                if(!Verify(response))
+                    response.Msg = "ERROR server VALIDATION";
 
             // ========================================================================== //
 
