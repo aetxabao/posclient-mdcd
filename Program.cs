@@ -40,12 +40,13 @@ namespace PosClient
         {
             //TODO: Verificar los mensajes recibido del servidor con su clave pública
 
-            string pubKey;
-            if (crts.TryGetValue(m.From, out pubKey))
+            try
             {
-                return Verify(m, pubKey);
+                string txt = m.From + m.To + m.Msg;
+                string sha = X.ShaHash(txt);
+                return X.VerifyData(sha, m.Stamp, pubKey);
             }
-            else
+            catch (Exception)
             {
                 return false;
             }
@@ -56,8 +57,9 @@ namespace PosClient
         public static void Sign(ref Message m)
         {
             //TODO: Poner en el Stamp del mensaje la firma del cliente
-
-
+            string txt = m.From + m.To + m.Msg;
+            string sha = X.ShaHash(txt);
+            m.Stamp = X.SignedData(sha, rsa);
 
         }
 
