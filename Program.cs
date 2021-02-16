@@ -273,7 +273,7 @@ namespace PosClient
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "RETR " + n, Stamp = "Client" };
             //TODO: Firmar mensaje que solicita un correo
-            
+            Sign(ref request)
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
