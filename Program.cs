@@ -40,24 +40,14 @@ namespace PosClient
         {
             //TODO: Verificar los mensajes recibido del servidor con su clave pública
 
-            Socket socket = Connect();
-
-            Send(socket, m);
-
-            Message msg = Receive(socket);
-
-            Disconnect(socket);
-            if(X.VerifyData(X.ShaHash(msg.From + msg.To + msg.Msg), msg.Stamp, srvPubKey)){
+            if(X.VerifyData(X.ShaHash(m.From + m.To + m.Msg), m.Stamp, srvPubKey)){
    
                     return true;
                 }
-                else{
+            else{
                     
                     return false;
                 }
-
-            
-
             
         }
 
