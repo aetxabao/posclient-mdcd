@@ -191,7 +191,7 @@ namespace PosClient
                     break;
                 case 4:
                     //TODO: Acceder a las opciones de MDCD mostrando el menú critográfico
-
+                    mdcd.Run();
                     break;
                 case 5:
                     EnviarClavePub();
@@ -209,10 +209,10 @@ namespace PosClient
 
             Socket socket = Connect();
             //TODO: Crear un mensaje con la clave pública del cliente firmado y enviarlo
-            
-
-
-
+            string m = X.RsaGetPubParsXml(rsa); //Obtener clave
+            Message msg = new Message {From = f, To = "0", Msg = "pubkey " + m, Stamp = "Client"}; //Crear mensaje
+            Sign(ref msg); //firmar
+            Send(socket, msg); //enviar
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
             if (!response.Msg.StartsWith("ERROR"))
@@ -221,12 +221,11 @@ namespace PosClient
                 //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
                 //y no asignar a srvPubKey la clave pública del servidor recibida
                 
-
-
-
-
-
-
+                srvPubKey = response.Msg; //asignar clave
+                if(!Verify(response)) //Devuelve false si hay error
+                {
+                    System.Console.WriteLine("ERROR server VALIDATION");
+                }
             }
             Console.WriteLine(response);
             Disconnect(socket);
