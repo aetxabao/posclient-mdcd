@@ -44,7 +44,7 @@ namespace PosClient
             {
                 string txt = m.From + m.To + m.Msg;
                 string sha = X.ShaHash(txt);
-                return X.VerifyData(sha, m.Stamp, pubKey);
+                return X.VerifyData(sha, m.Stamp, srvPubKey);
             }
             catch (Exception)
             {
@@ -243,7 +243,7 @@ namespace PosClient
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "LIST", Stamp = "Client" };
             //TODO: Firmar mensaje que solicita lista de correos
-            Sign(ref request)
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
@@ -273,7 +273,7 @@ namespace PosClient
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "RETR " + n, Stamp = "Client" };
             //TODO: Firmar mensaje que solicita un correo
-            Sign(ref request)
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
@@ -296,7 +296,7 @@ namespace PosClient
             Socket socket = Connect();
             Message request = new Message { From = f, To = t, Msg = m, Stamp = "Client" };
             //TODO: Firmar mensaje que se envia para otro cliente
-            Sign(ref request)
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
@@ -306,7 +306,7 @@ namespace PosClient
             {
                 System.Console.WriteLine("ERROR server VALIDATION");
             }
-            
+
             Console.WriteLine(response);
             Disconnect(socket);
         }
