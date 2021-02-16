@@ -243,7 +243,7 @@ namespace PosClient
 
                     if (!Verify(response))
                     {
-                        response.Msg = "ERROR server VALIDATION";
+                        Console.WriteLine("ERROR server VALIDATION");
                         srvPubKey = null;
                     }
 
@@ -279,7 +279,7 @@ namespace PosClient
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
             
                 if(!Verify(response))
-                    response.Msg = "ERROR server VALIDATION";
+                    Console.WriteLine("ERROR server VALIDATION");
 
             // ========================================================================== //
 
@@ -342,7 +342,7 @@ namespace PosClient
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
             
                 if(!Verify(response))
-                    response.Msg = "ERROR server VALIDATION";
+                    Console.WriteLine("ERROR server VALIDATION");
 
             // ========================================================================== //
 
