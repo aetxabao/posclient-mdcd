@@ -40,14 +40,15 @@ namespace PosClient
         {
             //TODO: Verificar los mensajes recibido del servidor con su clave pública
 
-
-
-
-
-
-
-
-            return false;
+            string pubKey;
+            if (crts.TryGetValue(m.From, out pubKey))
+            {
+                return Verify(m, pubKey);
+            }
+            else
+            {
+                return false;
+            }
             
         }
 
