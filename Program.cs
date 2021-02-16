@@ -220,9 +220,8 @@ namespace PosClient
                 //TODO: Extraer la clave pública del servidor del mensaje y verificar el mensaje de respuesta
                 //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
                 //y no asignar a srvPubKey la clave pública del servidor recibida
-                
-                srvPubKey = response.Msg; //asignar clave
-                if(!Verify(response)) //Devuelve false si hay error
+                srvPubKey = response.Msg;
+                if(!Verify(response))
                 {
                     System.Console.WriteLine("ERROR server VALIDATION");
                 }
