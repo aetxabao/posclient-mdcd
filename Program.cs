@@ -39,25 +39,29 @@ namespace PosClient
         public static bool Verify(Message m)
         {
             //TODO: Verificar los mensajes recibido del servidor con su clave pública
+            try
+            {
+                return X.VerifyData(X.ShaHash(m.From + m.To + m.Msg), m.Stamp, srvPubKey);
 
-
-
-
-
-
-
-
-            return false;
-            
+            }
+            catch (Exception)
+            {
+                System.Console.WriteLine("ERROR");
+            }
         }
 
         //Para firmar mensajes
         public static void Sign(ref Message m)
         {
             //TODO: Poner en el Stamp del mensaje la firma del cliente
-
-
-
+            try
+            {
+                m.Stamp = X.SignedData(X.ShaHash(m.From + m.To + m.Msg), rsa);
+            }
+            catch (Exception)
+            {
+                System.Console.WriteLine("ERROR");
+            }
         }
 
         public static IPAddress GetLocalIpAddress()
@@ -187,8 +191,7 @@ namespace PosClient
                     EscribirMensaje();
                     break;
                 case 4:
-                    //TODO: Acceder a las opciones de MDCD mostrando el menú critográfico
-
+                    mdcd.R*un();
                     break;
                 case 5:
                     EnviarClavePub();
