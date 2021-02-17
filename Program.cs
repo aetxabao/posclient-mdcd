@@ -80,9 +80,9 @@ namespace PosClient
         public static void ReadServerIpPort()
         {
             string s;
-            System.Console.WriteLine("Datos del servidor: ");
+            Console.WriteLine("Datos del servidor: ");
             string defIp = GetLocalIpAddress().ToString();
-            System.Console.Write("Dir. IP [{0}]: ", defIp);
+            Console.Write("Dir. IP [{0}]: ", defIp);
             s = Console.ReadLine();
             if ((s.Length > 0) && (s.Replace(".", "").Length == s.Length - 3))
             {
@@ -92,7 +92,7 @@ namespace PosClient
             {
                 ip = defIp;
             }
-            System.Console.Write("PUERTO [{0}]: ", port);
+            Console.Write("PUERTO [{0}]: ", port);
             s = Console.ReadLine();
             if (Int32.TryParse(s, out int i))
             {
@@ -102,15 +102,15 @@ namespace PosClient
 
         public static void PrintOptionMenu()
         {
-            System.Console.WriteLine("====================");
-            System.Console.WriteLine("        MENU        ");
-            System.Console.WriteLine("====================");
-            System.Console.WriteLine("0: Salir");
-            System.Console.WriteLine("1: Chequear correo");
-            System.Console.WriteLine("2: Obtener mensaje");
-            System.Console.WriteLine("3: Escribir mensaje");
-            System.Console.WriteLine("4: MyDeCoDer ");
-            System.Console.WriteLine("5: Enviar clave pub.");
+            Console.WriteLine("====================");
+            Console.WriteLine("        MENU        ");
+            Console.WriteLine("====================");
+            Console.WriteLine("0: Salir");
+            Console.WriteLine("1: Chequear correo");
+            Console.WriteLine("2: Obtener mensaje");
+            Console.WriteLine("3: Escribir mensaje");
+            Console.WriteLine("4: MyDeCoDer ");
+            Console.WriteLine("5: Enviar clave pub.");
         }
 
         public static int ReadOption()
@@ -118,7 +118,7 @@ namespace PosClient
             string s = null;
             while (true)
             {
-                System.Console.Write("Opción [0-5]: ");
+                Console.Write("Opción [0-5]: ");
                 s = Console.ReadLine();
                 if (Int32.TryParse(s, out int i))
                 {
@@ -132,7 +132,7 @@ namespace PosClient
 
         public static Socket Connect()
         {
-            IPAddress ipAddress = System.Net.IPAddress.Parse(ip);
+            IPAddress ipAddress = IPAddress.Parse(ip);
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
 
             Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -195,77 +195,64 @@ namespace PosClient
 
         public static void EnviarClavePub()
         {
-            System.Console.WriteLine("--------------------");
-            System.Console.WriteLine("5: Enviar clave pub.");
-            System.Console.WriteLine("--------------------");
-            System.Console.Write("From: ");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("5: Enviar clave pub.");
+            Console.WriteLine("--------------------");
+            Console.Write("From: ");
             string f = Console.ReadLine();
 
             Socket socket = Connect();
-            //TODO: Crear un mensaje con la clave pública del cliente firmado y enviarlo
-            
-
-
-
-            System.Console.WriteLine("....................");
+            Message request = new Message { From = f, To = "0", Msg = "PUBKEY " + X.RsaGetPubParsXml(rsa)};
+            Sign(ref request);
+            Send(socket, request);
+            Console.WriteLine("....................");
             Message response = Receive(socket);
             if (!response.Msg.StartsWith("ERROR"))
             {
-                //TODO: Extraer la clave pública del servidor del mensaje y verificar el mensaje de respuesta
                 //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
                 //y no asignar a srvPubKey la clave pública del servidor recibida
-                
-
-
-
-
-
-
+                srvPubKey = response.Msg;
+                Verifyif(response);
             }
             Console.WriteLine(response);
             Disconnect(socket);
-
         }
 
         public static void ChequearCorreo()
         {
-            System.Console.WriteLine("--------------------");
-            System.Console.WriteLine("1: Chequear correo  ");
-            System.Console.WriteLine("--------------------");
-            System.Console.Write("From: ");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("1: Chequear correo  ");
+            Console.WriteLine("--------------------");
+            Console.Write("From: ");
             string f = Console.ReadLine();
 
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "LIST", Stamp = "Client" };
             Sign(ref request);
             Send(socket, request);
-            System.Console.WriteLine("....................");
+            Console.WriteLine("....................");
             Message response = Receive(socket);
-            //TODO: Verificar el mensaje de respuesta a LIST
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
-            
-
-
-
+            Verifyif(response);
             Console.WriteLine(response);
             Disconnect(socket);
         }
 
         public static void ObtenerMensaje()
         {
-            System.Console.WriteLine("--------------------");
-            System.Console.WriteLine("2: Obtener mensaje  ");
-            System.Console.WriteLine("--------------------");
-            System.Console.Write("From: ");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("2: Obtener mensaje  ");
+            Console.WriteLine("--------------------");
+            Console.Write("From: ");
             string f = Console.ReadLine();
-            System.Console.Write("Num.: ");
+            Console.Write("Num.: ");
             string n = Console.ReadLine();
 
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "RETR " + n, Stamp = "Client" };
             Sign(ref request);
             Send(socket, request);
-            System.Console.WriteLine("....................");
+            Console.WriteLine("....................");
             Message response = Receive(socket);
             Console.WriteLine(response);
             Disconnect(socket);
@@ -273,30 +260,35 @@ namespace PosClient
 
         public static void EscribirMensaje()
         {
-            System.Console.WriteLine("--------------------");
-            System.Console.WriteLine("3: Escribir mensaje ");
-            System.Console.WriteLine("--------------------");
-            System.Console.Write("From: ");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("3: Escribir mensaje ");
+            Console.WriteLine("--------------------");
+            Console.Write("From: ");
             string f = Console.ReadLine();
-            System.Console.Write("To: ");
+            Console.Write("To: ");
             string t = Console.ReadLine();
-            System.Console.Write("Msg: ");
+            Console.Write("Msg: ");
             string m = Console.ReadLine();
 
             Socket socket = Connect();
             Message request = new Message { From = f, To = t, Msg = m, Stamp = "Client" };
             Sign(ref request);
             Send(socket, request);
-            System.Console.WriteLine("....................");
+            Console.WriteLine("....................");
             Message response = Receive(socket);
-            //TODO: Verificar el mensaje de respuesta de recepción
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
-            
-
-
-
+            Verifyif(response);
             Console.WriteLine(response);
             Disconnect(socket);
+        }
+
+        private static void Verifyif(Message response)
+        {
+            if (!Verify(response))
+            {
+                Console.WriteLine("ERROR server VALIDATION");
+            }
+            else { }
         }
 
         public static int Main(String[] args)
@@ -309,7 +301,7 @@ namespace PosClient
                 if (opt == 0) break;
                 Process(opt);
             }
-            System.Console.WriteLine("FIN.");
+            Console.WriteLine("FIN.");
             return 0;
         }
     }
