@@ -311,13 +311,21 @@ namespace PosClient
             Socket socket = Connect();
             Message request = new Message { From = f, To = t, Msg = m, Stamp = "Client" };
             //TODO: Firmar mensaje que se envia para otro cliente
-
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
             //TODO: Verificar el mensaje de respuesta de recepción
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
 
+            if (!Verify(response))
+            {
+                System.Console.WriteLine("ERROR server VALIDATION");
+            }
+            else
+            {
+                srvPubKey = response.Msg;
+            }
 
 
 
