@@ -189,7 +189,7 @@ namespace PosClient
                     break;
                 case 4:
                     //TODO: Acceder a las opciones de MDCD mostrando el menú critográfico
-                    mddc.PrintOptionMenu();
+                    mddc.Run();
                     break;
                 case 5:
                     EnviarClavePub();
