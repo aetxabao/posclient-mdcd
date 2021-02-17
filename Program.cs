@@ -253,15 +253,23 @@ namespace PosClient
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "LIST", Stamp = "Client" };
             //TODO: Firmar mensaje que solicita lista de correos
-
+            //Con esto llamamos al mensaje que lo tenemos justo arriba (request) y lo firmarmo 
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
             //TODO: Verificar el mensaje de respuesta a LIST
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
+            //Supongo que hay que verificar al igual que en metodo anterior lo cual sera la misma estructura
 
-
-
+            if (!Verify(response))
+            {
+                System.Console.WriteLine("ERROR server VALIDATION");
+            }
+            else
+            {
+                srvPubKey = response.Msg;
+            }
 
             Console.WriteLine(response);
             Disconnect(socket);
