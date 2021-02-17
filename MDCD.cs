@@ -11,17 +11,17 @@ namespace PosClient
         {
             System.Console.WriteLine(@"=========================
          MyDeCoDer       
-=========================
-0. Exit
-1. Codificar AES
-2. Decodificar AES
-3. RSA Pub key
-4. Codificar RSA
-5. Decodificar RSA
-6. Firmar
-7. Comprobar firma
-8. Hash SHA 256
-9. Random string");
+        =========================
+        0. Exit
+        1. Codificar AES
+        2. Decodificar AES
+        3. RSA Pub key
+        4. Codificar RSA
+        5. Decodificar RSA
+        6. Firmar
+        7. Comprobar firma
+        8. Hash SHA 256
+        9. Random string");
         }
 
         public int ReadOption()
