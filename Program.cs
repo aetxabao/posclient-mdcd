@@ -39,14 +39,17 @@ namespace PosClient
         public static bool Verify(Message m)
         {
             //TODO: Verificar los mensajes recibido del servidor con su clave pública
-            if (srvPubKey != null)
+            try
             {
-                return Verify(m.From, srvPubKey);
+               string txt = m.From + m.To + m.Msg;
+               string sha = X.ShaHash(txt);
+               return X.VerifyData(txt, sha, srvPubKey);
             }
-            else
+            catch (System.Exception)
             {
                 return false;
-            } 
+            }
+            
         }
 
         //Para firmar mensajes
