@@ -38,22 +38,20 @@ namespace PosClient
         // Para verificar mensajes del servidor
         public static bool Verify(Message m)
         {
-            //TODO: Verificar los mensajes recibido del servidor con su clave pública
             try
             {
                 return X.VerifyData(X.ShaHash(m.From + m.To + m.Msg), m.Stamp, srvPubKey);
-
             }
             catch (Exception)
             {
                 System.Console.WriteLine("ERROR");
+                return false;
             }
         }
 
         //Para firmar mensajes
         public static void Sign(ref Message m)
         {
-            //TODO: Poner en el Stamp del mensaje la firma del cliente
             try
             {
                 m.Stamp = X.SignedData(X.ShaHash(m.From + m.To + m.Msg), rsa);
@@ -191,7 +189,7 @@ namespace PosClient
                     EscribirMensaje();
                     break;
                 case 4:
-                    mdcd.R*un();
+                    mdcd.Run();
                     break;
                 case 5:
                     EnviarClavePub();
