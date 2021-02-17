@@ -38,26 +38,24 @@ namespace PosClient
         // Para verificar mensajes del servidor
         public static bool Verify(Message m)
         {
-            //TODO: Verificar los mensajes recibido del servidor con su clave pública
-
-
-
-
-
-
-
-
-            return false;
-            
+            try 
+            {
+                string txt = m.From + m.To + m.Msg;
+                string sha = X.ShaHash(txt);
+                return X.VerifyData(sha, m.Stamp, srvPubKey);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         //Para firmar mensajes
         public static void Sign(ref Message m)
         {
-            //TODO: Poner en el Stamp del mensaje la firma del cliente
-
-
-
+            string txt = m.From + m.To + m.Msg;
+            string sha = X.ShaHash(txt);
+            m.Stamp = X.SignedData(sha, rsa);
         }
 
         public static IPAddress GetLocalIpAddress()
@@ -187,8 +185,7 @@ namespace PosClient
                     EscribirMensaje();
                     break;
                 case 4:
-                    //TODO: Acceder a las opciones de MDCD mostrando el menú critográfico
-
+                    mdcd.Run();
                     break;
                 case 5:
                     EnviarClavePub();
@@ -240,8 +237,7 @@ namespace PosClient
 
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "LIST", Stamp = "Client" };
-            //TODO: Firmar mensaje que solicita lista de correos
-            
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
@@ -267,8 +263,7 @@ namespace PosClient
 
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "RETR " + n, Stamp = "Client" };
-            //TODO: Firmar mensaje que solicita un correo
-            
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
@@ -290,8 +285,7 @@ namespace PosClient
 
             Socket socket = Connect();
             Message request = new Message { From = f, To = t, Msg = m, Stamp = "Client" };
-            //TODO: Firmar mensaje que se envia para otro cliente
-            
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
