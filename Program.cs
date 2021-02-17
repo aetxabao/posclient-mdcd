@@ -243,14 +243,17 @@ namespace PosClient
 
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "LIST", Stamp = "Client" };
-            //TODO: Firmar mensaje que solicita lista de correos
-            
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
-            //TODO: Verificar el mensaje de respuesta a LIST
-            //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
-            
+            if (!Verify(response))
+            {
+                Console.WriteLine("ERROR en la validación.");
+            }
+            else{
+                srvPubKey = response.Msg;
+            }
 
 
 
@@ -270,8 +273,7 @@ namespace PosClient
 
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "RETR " + n, Stamp = "Client" };
-            //TODO: Firmar mensaje que solicita un correo
-            
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
@@ -293,14 +295,17 @@ namespace PosClient
 
             Socket socket = Connect();
             Message request = new Message { From = f, To = t, Msg = m, Stamp = "Client" };
-            //TODO: Firmar mensaje que se envia para otro cliente
-            
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
-            //TODO: Verificar el mensaje de respuesta de recepción
-            //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
-            
+            if (!Verify(response))
+            {
+                Console.WriteLine("Error en la validación.");
+            }
+            else{   
+                srvPubKey = response.Msg;
+            }
 
 
 
