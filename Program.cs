@@ -296,10 +296,9 @@ namespace PosClient
             Message response = Receive(socket);
             //TODO: Verificar el mensaje de respuesta de recepción
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
-            
-
-
-
+            if (!Verify(response)) {
+                Console.WriteLine("ERROR server VALIDATION");
+            }
             Console.WriteLine(response);
             Disconnect(socket);
         }
