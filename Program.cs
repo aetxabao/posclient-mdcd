@@ -39,24 +39,25 @@ namespace PosClient
         public static bool Verify(Message m)
         {
             //TODO: Verificar los mensajes recibido del servidor con su clave pública
-
-
-
-
-
-
-
-
-            return false;
+            
+            string txt = m.From + m.To + m.Msg;
+            string hash = X.ShaHash(txt);
+            if(X.VerifyData(hash, m.Stamp, srvPubKey)){
+                    return true;
+                }
+            else{  
+                    return false;
+                }
             
         }
 
         //Para firmar mensajes
-        public static void Sign(ref Message m)
+        public static void Sign(ref Message m) 
         {
             //TODO: Poner en el Stamp del mensaje la firma del cliente
-
-
+            string txt = m.From + m.To + m.Msg;
+            string hash = X.ShaHash(txt);
+            m.Stamp = X.SignedData(hash, rsa);
 
         }
 
@@ -188,7 +189,7 @@ namespace PosClient
                     break;
                 case 4:
                     //TODO: Acceder a las opciones de MDCD mostrando el menú critográfico
-
+                    mdcd.Run();
                     break;
                 case 5:
                     EnviarClavePub();
@@ -206,10 +207,13 @@ namespace PosClient
 
             Socket socket = Connect();
             //TODO: Crear un mensaje con la clave pública del cliente firmado y enviarlo
+            string from = f;
+            string to = "0";
+            string message = "PUBKEY " + X.RsaGetPubParsXml(rsa);
             
-
-
-
+            Message msg = new Message{ From = from, To = to, Msg = message, Stamp = "Client"};
+            Sign(ref msg);
+            Send(socket, msg);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
             if (!response.Msg.StartsWith("ERROR"))
@@ -217,13 +221,13 @@ namespace PosClient
                 //TODO: Extraer la clave pública del servidor del mensaje y verificar el mensaje de respuesta
                 //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
                 //y no asignar a srvPubKey la clave pública del servidor recibida
-                
-
-
-
-
-
-
+                if(!X.VerifyData(X.ShaHash(response.From + response.To + response.Msg), response.Stamp, response.Msg)){
+                    Console.WriteLine("ERROR server VALIDATION");
+                }
+                else{
+                    
+                    srvPubKey = response.Msg;
+                }
             }
             Console.WriteLine(response);
             Disconnect(socket);
@@ -241,13 +245,14 @@ namespace PosClient
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "LIST", Stamp = "Client" };
             //TODO: Firmar mensaje que solicita lista de correos
-            
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
             //TODO: Verificar el mensaje de respuesta a LIST
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
-            
+            if(!Verify(response)){
+                  Console.WriteLine("ERROR server VALIDACION");}
 
 
 
@@ -268,7 +273,7 @@ namespace PosClient
             Socket socket = Connect();
             Message request = new Message { From = f, To = "0", Msg = "RETR " + n, Stamp = "Client" };
             //TODO: Firmar mensaje que solicita un correo
-            
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
@@ -291,13 +296,16 @@ namespace PosClient
             Socket socket = Connect();
             Message request = new Message { From = f, To = t, Msg = m, Stamp = "Client" };
             //TODO: Firmar mensaje que se envia para otro cliente
-            
+            Sign(ref request);
             Send(socket, request);
             System.Console.WriteLine("....................");
             Message response = Receive(socket);
             //TODO: Verificar el mensaje de respuesta de recepción
             //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
-            
+            if(!Verify(response)){
+                  Console.WriteLine("ERROR server VALIDATION");  
+            }
+
 
 
 
