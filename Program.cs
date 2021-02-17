@@ -212,8 +212,11 @@ namespace PosClient
 
             Socket socket = Connect();
             //TODO: Crear un mensaje con la clave pública del cliente firmado y enviarlo
-
-
+            string to = "0";
+            string msg = X.RsaGetPubParsXml(rsa);
+            Message mensaje = new Message { From = f, To = to, Msg = "PUBKEY " + msg, Stamp = "Client" };
+            Sign(ref mensaje);
+            Send(socket, mensaje);
 
 
             System.Console.WriteLine("....................");
@@ -224,11 +227,14 @@ namespace PosClient
                 //si no se puede verificar la respuesta mostrar en consola "ERROR server VALIDATION"
                 //y no asignar a srvPubKey la clave pública del servidor recibida
 
-
-
-
-
-
+                if (Verify(response))
+                {
+                    srvPubKey = response.Msg;
+                }
+                else
+                {
+                    System.Console.WriteLine("Error de verificacion del mensaje de respuesta ");
+                }
 
             }
             Console.WriteLine(response);
