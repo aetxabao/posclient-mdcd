@@ -57,7 +57,9 @@ namespace PosClient
         {
             //TODO: Poner en el Stamp del mensaje la firma del cliente
 
-
+            string txt = m.From + m.To + m.Msg;
+            string sha = X.ShaHash(txt);
+            m.Stamp = X.SignedData(sha, rsa);
 
         }
 
