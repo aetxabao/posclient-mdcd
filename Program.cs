@@ -55,7 +55,7 @@ namespace PosClient
         //Para firmar mensajes
         public static void Sign(ref Message m)
         {
-            //TODO: Poner en el Stamp del mensaje la firma del cliente
+            //DONE: Poner en el Stamp del mensaje la firma del cliente
 
             string txt = m.From + m.To + m.Msg;
             string sha = X.ShaHash(txt);
@@ -190,8 +190,8 @@ namespace PosClient
                     EscribirMensaje();
                     break;
                 case 4:
-                    //TODO: Acceder a las opciones de MDCD mostrando el menú critográfico
-
+                    //DONE: Acceder a las opciones de MDCD mostrando el menú critográfico
+                    mdcd.Run();
                     break;
                 case 5:
                     EnviarClavePub();
